@@ -1,0 +1,151 @@
+<p-toolbar>
+  <div class="p-toolbar-group-left">
+    <h1>Aplicación Autorizador</h1>
+  </div>
+  <div class="p-toolbar-group-right">
+    <p-toggleButton
+      [(ngModel)]="consoleMode"
+      onLabel="'Modo Consola'"
+      offLabel="'API REST'"
+      (onChange)="(toggleMode)"
+    ></p-toggleButton>
+  </div>
+</p-toolbar>
+<div class="grid p-8">
+  <div class="col w-full" *ngIf="consoleMode">
+    <!-- Entrada JSON -->
+    <textarea
+      pInputTextarea
+      [(ngModel)]="jsonData"
+      class="w-full h-full"
+      rows="15"
+      cols="30"
+      placeholder="Ingresa JSON aquí"
+    ></textarea>
+    <button
+      pButton
+      class="mt-4"
+      type="button"
+      label="Enviar JSON"
+      (click)="processJsonData()"
+    ></button>
+  </div>
+
+  <div class="col" *ngIf="consoleMode">
+    <p-panel header="Consola de Resultados">
+      <div
+        *ngFor="let response of apiResponses"
+        class="border-50 surface-overlay border-1 mb-2 p-2"
+      >
+        <p>
+          Violaciones:
+          <strong class="text-red-500">{{ response.violaciones }}</strong>
+        </p>
+        <p>Resultado: {{ response.cuenta | json }}</p>
+      </div>
+    </p-panel>
+  </div>
+
+  <div class="col-6" *ngIf="!consoleMode">
+    <h2>Formulario Dinámico</h2>
+
+    <p-dropdown
+      [options]="formTypes"
+      [(ngModel)]="selectedFormType"
+      placeholder="Selecciona un tipo"
+      class="mb-4"
+    ></p-dropdown>
+
+    <div #myForm *ngIf="selectedFormType === 'cuenta' && !consoleMode">
+      <form [formGroup]="cuentaForm" (ngSubmit)="onSubmit()">
+        <div class="flex justify-content-between">
+          <p-checkbox
+            [binary]="true"
+            class="mb-4"
+            formControlName="tarjetaActiva"
+            label="Tarjeta Activa"
+          ></p-checkbox>
+
+          <input
+            type="number"
+            pInputText
+            formControlName="id"
+            placeholder="id"
+            class="mb-4"
+          />
+
+          <input
+            type="number"
+            pInputText
+            class="mb-4"
+            formControlName="limiteDisponible"
+            placeholder="Limite disponible"
+          />
+        </div>
+        <button
+          pButton
+          type="submit"
+          class="w-full"
+          label="Enviar cuenta"
+        ></button>
+      </form>
+    </div>
+
+    <div *ngIf="selectedFormType === 'transaccion' && !consoleMode">
+      <form [formGroup]="transaccionForm" (ngSubmit)="onSubmit()">
+        <input
+          type="text"
+          pInputText
+          class="mb-4 mt-4"
+          formControlName="id"
+          placeholder="id de la cuenta"
+        />
+        <input
+          type="text"
+          pInputText
+          class="w-full mb-4"
+          formControlName="comerciante"
+          placeholder="Comerciante"
+        />
+        <input
+          type="text"
+          pInputText
+          class="mb-4 mr-4"
+          formControlName="cantidad"
+          placeholder="Cantidad"
+        />
+        <p-calendar
+          formControlName="tiempo"
+          placeholder="Tiempo"
+          dateFormat="yy-mm-dd"
+          [showTime]="true"
+          [hourFormat]="'24'"
+        ></p-calendar>
+        <button
+          pButton
+          type="submit"
+          label="Enviar Transacción"
+          class="w-full"
+        ></button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-6 p-8" *ngIf="!consoleMode">
+    <p-panel header="Consola de Resultados">
+      <!-- <p-divider></p-divider> -->
+      <div
+        class="border-50 surface-overlay border-1 mb-2 p-2"
+        *ngFor="let response of apiResponses"
+      >
+        <p>
+          Violaciones:
+          <strong class="text-red-500">{{ response.violaciones }}</strong>
+        </p>
+        <p>Resultado: {{ response.cuenta | json }}</p>
+        <!-- <p-divider></p-divider> -->
+      </div>
+    </p-panel>
+  </div>
+</div>
+<router-outlet></router-outlet>
