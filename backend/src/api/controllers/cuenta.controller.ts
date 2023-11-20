@@ -7,6 +7,7 @@ class CuentaController {
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() });
     }
+
     const violaciones = CuentaService.crearCuenta(req.body);
     const cuenta = CuentaService.obtenerCuenta(req.body.id);
 

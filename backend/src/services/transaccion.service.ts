@@ -12,8 +12,9 @@ class TransaccionService {
   } {
     // console.log(this.transacciones);
     const violaciones: string[] = [];
+    console.log('Trying to locate transaction.id: ', transaccion);
     const cuenta = CuentaService.obtenerCuenta(transaccion.id);
-
+    console.log('Cuenta at transaction.service: ', cuenta);
     if (!cuenta) {
       violaciones.push('cuenta-no-inicializada');
       return { cuenta, violaciones };
@@ -27,9 +28,9 @@ class TransaccionService {
       violaciones.push('limite-insuficiente');
     }
 
-    const ahora = new Date().getTime(); 
+    const ahora = new Date().getTime();
     const transaccionesRecientes = this.transacciones.filter(
-      (t) => ahora - new Date(t.tiempo).getTime() <= INTERVALO_TIEMPO 
+      (t) => ahora - new Date(t.tiempo).getTime() <= INTERVALO_TIEMPO
     );
 
     if (transaccionesRecientes.length >= LIMITE_TRANSACCIONES) {
@@ -46,7 +47,6 @@ class TransaccionService {
     if (esDuplicada) {
       violaciones.push('transaccion-duplicada');
     }
-
 
     if (violaciones.length === 0) {
       cuenta.limite_disponible -= transaccion.cantidad;

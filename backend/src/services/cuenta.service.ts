@@ -10,6 +10,7 @@ class CuentaService {
       violaciones.push('cuenta-ya-inicializada');
     } else {
       this.cuentas.set(cuenta.id, cuenta);
+      console.log('CuentaService.crearCuenta: ', this.cuentas);
     }
 
     return violaciones;

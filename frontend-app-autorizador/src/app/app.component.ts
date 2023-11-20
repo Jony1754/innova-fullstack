@@ -33,9 +33,9 @@ export class AppComponent implements OnInit {
     });
 
     this.transaccionForm = this.formBuilder.group({
-      id: ['', Validators.required],
+      id: [0, Validators.required],
       comerciante: ['', Validators.required],
-      cantidad: ['', Validators.required],
+      cantidad: [0, Validators.required],
       tiempo: ['', Validators.required],
     });
 
@@ -60,6 +60,7 @@ export class AppComponent implements OnInit {
         const data = JSON.parse(line);
 
         if (data.cuenta) {
+          console.log('data.cuenta: ', data.cuenta);
           this.apiService
             .enviarDatos(`${this.apiUrl + '/cuenta'}`, data.cuenta)
             .pipe<SearchResponse>(
@@ -103,8 +104,9 @@ export class AppComponent implements OnInit {
       url += '/cuenta';
     } else if (this.selectedFormType === 'transaccion') {
       data = {
+        id: Number(this.transaccionForm.value.id),
         comerciante: this.transaccionForm.value.comerciante,
-        cantidad: this.transaccionForm.value.cantidad,
+        cantidad: Number(this.transaccionForm.value.cantidad),
         tiempo: new Date(this.transaccionForm.value.tiempo).toISOString(),
       };
 
